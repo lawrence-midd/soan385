@@ -1,6 +1,8 @@
 ## Getting Started
 
-To setup, copy all the text on this screen. Then log in to https://rstudio.middlebury.edu, and in the "File" menu select "New File" then "R Markdown". Paste this file and save it.
+To begin, copy all the text on this screen. Then log in to https://rstudio.middlebury.edu, and in the "File" menu select "New File" then "R Markdown". Add a title like "SOAN 245 Workshop Week 9", include your name in the "Author" box, and click Ok. A default markdown file will open. Delete all the text in the default file and paste in the text you previously copied to your clipboard. Make sure that "R Markdown" is selected in the file type drop down menu in the bottom right corner of this pane. Save the file (in the R window, not your browser!) in your "Home" folder on the R Studio server. 
+
+***Once the R Markdown file is saved, you can access it through the server in the future. You do not have to copy and paste it from the web link each time. The first place to look for it is in the "File" menu (in the R window, your your browser!) under "Recent Files".***
 
 Now let's load the packages and the data:
 
@@ -24,40 +26,45 @@ We want to find the proportion of students at every college whose parents are in
 
 There is a variable for the proportion of students from the top 1%: `par_top1pc`. Let's find that value for Middlebury College:
 
-```{r}
+```{r top 1%}
 colleges$par_top1pc[colleges$name=="Middlebury College"]
 ```
 
 The *NYT* chose to focus on the top 1%. The dataset also includes variables for the proportion of students from the top 5% and the top 10% that follow the same coding syntax as the variable for the proportion from the top 1%. Try to find the proportion of students at Middlebury from the top 5% and the proportion of students from a different institution from the top 10%:
 
-```{r}
+```{r top 5% and top 10%}
 colleges$par_top5pc[colleges$name=="Middlebury College"]
 colleges$par_top10pc[colleges$name=="University Of Vermont And State Agricultural College"]
 ```
 
 After the top 10% of the income distribution, students are grouped by income quintile from quintile 1 (the bottom 20%) to quintile 5 (the top 20%). The variable for the proportion of students from the bottom 20% is `par_q1` and the variable for the proportion of students from the top 20% is `par_q5`. How would we use these variables to find the proportion of students from the bottom 60%?
 
-```{r}
+```{r bottom 60%}
 colleges$par_bottom60pc <- colleges$par_q1 + colleges$par_q2 + colleges$par_q3
 ```
 
 What proportion of Middlebury College studentes come from families in the bottom 60% of the income distribution?
 
-```{r}
+```{r bottom 60% for Middlebury}
 colleges$par_bottom60pc[colleges$name=="Middlebury College"]
 ```
 
 Now let's calculate the statistic that the NYT analysis presents as its main finding, the ratio of students from the top 1% to the bottom 60%:
 
-```{r}
+```{r calculating ratio}
 colleges$ratio <- colleges$par_top1pc / colleges$par_bottom60pc
 ```
 
-What is this value for Middlebury? How would you interpret that number?
+What is this value for Middlebury? How would you interpret that value?
 
-Let's create a new data frame (called `college_ratios`) that only has the variables needed for this ratio. We'll look at the colleges with the ten highest ratios and create a new variable called `rank` that is each school's rank (with the institution with the highest ratio ranked #1):
+```{r ratio for Middlebury}
+colleges$ratio[colleges$name=="Middlebury College"]
+```
 
-```{r}
+
+Let's create a new data frame (called `college_ratios`) that only has the variables needed for this ratio. We'll look at the colleges with the ten highest ratios and create a new variable called `rank` that captures each school's rank (where the institution with the highest ratio is ranked #1):
+
+```{r summarizing ratios}
 college_ratios <- colleges %>% 
      arrange(desc(ratio)) %>% 
      mutate(rank = row_number()) %>%
@@ -68,7 +75,7 @@ college_ratios
 
 Find the rank for another college (that is not in the top 10):
 
-```{r}
+```{r ratio rank}
 college_ratios$rank[college_ratios$name=="Stanford University"]
 ```
 
@@ -76,23 +83,25 @@ college_ratios$rank[college_ratios$name=="Stanford University"]
 
 ## Mobility Measures
 
-Now let's turn to the measures that are the focus on the Chetty paper. The paper uses two variables to try and assess how accessible colleges are to students from the bottom of the income distribution (they call this the `access_rate`) and how successful colleges are at moving students from the bottom of the income distrubtion to the top of the income distribution by age 30 (they call this the `success_rate`). Let's find these two measures for Middlebury:
+Now let's turn to the measures that are the focus on the Chetty paper. The paper uses two variables to try and assess how accessible colleges are to students from the bottom of the income distribution (they call this the `access_rate`) and how successful colleges are at moving students from the bottom of the parents' income distrubtion to the top of the students' income distribution by the time they are approximately 30 years old (they call this the `success_rate`). 
 
-```{r}
+Let's find these two measures for Middlebury (note that we are using the `colleges` data frame again):
+
+```{r access rate and success rate}
 colleges$access_rate[colleges$name=="Middlebury College"]
 colleges$success_rate[colleges$name=="Middlebury College"]
 ```
 
-The product of these is the proportion of all Middlebury students who are from the lowest income quintile and make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find it for Middlebury:
+The product of these is the proportion of all Middlebury students from the lowest income quintile who make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find it for Middlebury:
 
-```{r}
+```{r calcualting the mobility rate}
 colleges$mobility_rate <- colleges$access_rate * colleges$success_rate
 colleges$mobility_rate[colleges$name=="Middlebury College"]
 ```
 
 Where does Middlebury's value fall in the overall distribution of mobility rates at four-year colleges?
 
-```{r}
+```{r summarizing the mobility rate}
 summary(colleges$mobility_rate)
 ```
 
@@ -103,65 +112,61 @@ Chetty et al use several other college characteristics - gathered from the Commo
 
 Let's find the correlation:
 
-```{r}
+```{r correlation}
 cor(colleges$sticker_price_2013, colleges$success_rate, use = "complete.obs")
 ```
 
+This is a positive and moderately strong relationship. In words, this correlation means that colleges with higher sticker prices tend to have higher success rates.
+
 The relationship between these two variables might be easier to interpret in a scatterplot with a "line of best fit":
 
-```{r, message = FALSE, warning = FALSE}
-plot_instruction <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate))
-plot_instruction + geom_point() + geom_smooth(method = lm)
+```{r scatterplot , message = FALSE, warning = FALSE}
+plot_sticker_price <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate))
+plot_sticker_price + geom_point() + geom_smooth(method = lm)
 ```
 
 
-Where is Middlebury's point in this distribution? The trick for identifying a specific observation is to create a new dataframe with only that observation and to layer a scatterplot with only that observation on top of our existing scatterplot. To make things even clearer, we'll change all the other points to a lighter color and give Middlebury a bigger dot in blue:
+Where is Middlebury's point in this distribution? The trick for identifying a specific observation is to create a new data frame with only that observation and then use that data frame to layer a scatterplot with only that observation on top of our existing scatterplot. To make things even clearer, we'll change all the other points to a lighter color and give Middlebury a bigger dot in blue.
 
-```{r, error = FALSE, warning = FALSE}
+(Be careful with this code: if you try to make a scatterplot with a different variable, remember to replace it in each line as necessary!)
+
+```{r scatterplot with Middlebury label, error = FALSE, warning = FALSE}
 middlebury <- filter(colleges, name == "Middlebury College")
 
-plot_instruction <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate))
-plot_instruction + geom_point()
-
-plot_admit_rate <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate))
-plot_admit_rate + geom_point(color = "light gray") + geom_smooth(method = lm, color = "red") +
+plot_sticker_price <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate))
+plot_sticker_price + geom_point(color = "light gray") + geom_smooth(method = lm, color = "red") +
      geom_point(data = middlebury, aes(x = sticker_price_2013, y = success_rate), color = "Blue", size = 2) +
      geom_text(data = middlebury, aes(x = sticker_price_2013, y = success_rate + .05, label = "Middlebury"), color = "Blue")
 ```
 
 
+## Workshop Report
 
-`scorecard_netprice_2013`:
-`sticker_price_2013`:
-`instructional_expenditures_pc_2012`:
-`endowment_pc_2000`:
-`sat_avg_2013`:
-`ipeds_enrollment_2013`:
-`average_faculty_salary_2013`:
-`admit_rate_2013`:
+Answer the following questions in a separate file (not in R). Upload a PDF of your document to Canvas by 11:00 AM on Monday, November 13th. You are free to collaborate with classmates on this workshop report, but each student must upload their own submission.
+
+1. Choose two of the following variables and find how each is correlated with the success rate. Select two measures you expect might have different correlations with the success rate (one positive and one negative, or one strongly positive and one weakly positive, for example). Interpret both correlations in words. For one of the variables, include a scatterplot showing how it is related to the success rate.
+
+The avaialble variables are:
+
+`admit_rate_2013`: Proportion of undergraduate applicants accepted for the class that entered in Fall 2013;
+`asian_or_pacific_share_fall_2000`: Share of Asian or Pacific Islander undergraduate students in Fall 2000;
+`average_faculty_salary_2013`: Average salary of instructional faculty;
+`black_share_fall_2000`: Share of Black undergraduate students in Fall 2000;
+`endowment_pc_2000`: Endowment assets per student in 2000;
+`female`: Proportion of students who are female;
+`graduation_rate_2013`: Proportion of students graduating within 6 years of entry;
+`hisp_share_fall_2000`: Share of Hispanic undergraduate estudents in Fall 2000;
+`instructional_expenditures_pc_2012`: Instructional expenditures per student in 2000;
+`ipeds_enrollment_2013`: Total IPEDS undergraduate enrollment (full time and part time) in Fall 2013;
+`pct_arthuman_2000`: Arts and Humanities major share in 2000;
+`pct_socialscience_2000`: Social Sciences major share in 2000;
+`pct_stem_2000`: STEM major share in 2000;
+`scorecard_netprice_2013`: Net cost of attendance for students from the bottom 20% of the income distribution in 2013;
+`sat_avg_2013`: Average SAT scores (scaled to 1600) in 2013; values for this variable are missing for institutions that do not require the SAT
 
 
-```{r}
-cor(colleges$graduation_rate_2013, colleges$success_rate, use = "complete.obs")
-cor(colleges$scorecard_netprice_2013, colleges$success_rate, use = "complete.obs")
-cor(colleges$sticker_price_2013, colleges$success_rate, use = "complete.obs")
-cor(colleges$instructional_expenditures_pc_2012, colleges$success_rate, use = "complete.obs")
-cor(colleges$endowment_pc_2000, colleges$success_rate, use = "complete.obs")
-cor(colleges$sat_avg_2013, colleges$success_rate, use = "complete.obs")
-cor(colleges$ipeds_enrollment_2013, colleges$success_rate, use = "complete.obs")
-cor(colleges$average_faculty_salary_2013, colleges$success_rate, use = "complete.obs")
-cor(colleges$admit_rate_2013, colleges$success_rate, use = "complete.obs")
-```
+2. What is another variable that is not included in this dataset that you expect would have a strong *positive relationship* with the **access rate**? What could explain this relationship?
 
+3. What is another variable that is not included in this dataset that you expect would have a strong *negative relationship* with the **access rate**? What could explain this relationship?
 
-colleges$admit_rate_2013[colleges$name=="Middlebury College"]
-
-middlebury <- filter(colleges, name == "Middlebury College")
-
-plot_instruction <- ggplot(colleges, aes(x = log(instructional_expenditures_pc_2012), y = to_top20_if_bottom20))
-plot_instruction + geom_point()
-
-plot_admit_rate <- ggplot(colleges, aes(x = admit_rate_2013, y = to_top20_if_bottom20))
-plot_admit_rate + geom_point(color = "light gray") + geom_smooth(method = lm, color = "red") +
-     geom_point(data = middlebury, aes(x = admit_rate_2013, y = to_top20_if_bottom20), color = "Blue", size = 2) +
-     geom_text(data = middlebury, aes(x = admit_rate_2013, y = to_top20_if_bottom20 + .05, label = "Middlebury"), color = "Blue")
+4. Think back to the ***mobility rate*** and how it is calculated. What are some of the advantages and disadvantages in using this single measure to compare colleges?
