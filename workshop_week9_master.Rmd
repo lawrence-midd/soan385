@@ -44,7 +44,7 @@ colleges$par_top10pc[colleges$name=="University Of Vermont And State Agricultura
 After the top 10% of the income distribution, students are grouped by income quintile from quintile 1 (the bottom 20%) to quintile 5 (the top 20%). The variable for the proportion of students from the bottom 20% is `par_q1` and the variable for the proportion of students from the top 20% is `par_q5` with the other three quintiles in the middle. How would we use these variables to find the proportion of students from the bottom 60%?
 
 ```{r bottom 60%}
-colleges$par_bottom60pc <- colleges$par_q1 + colleges$par_q2 + colleges$par_q3
+colleges$par_bottom60pc <- colleges$par_q4 + colleges$par_q2 + colleges$par_q3
 ```
 
 What proportion of Middlebury College studentes come from families in the bottom 60% of the income distribution?
@@ -96,7 +96,7 @@ colleges$access_rate[colleges$name=="Middlebury College"]
 colleges$success_rate[colleges$name=="Middlebury College"]
 ```
 
-The product of these values is the proportion of all Middlebury students from the lowest income quintile who make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find the value for Middlebury:
+The product of these values is the proportion of all Middlebury students who are from the lowest income quintile and who make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find the value for Middlebury:
 
 ```{r calcualting the mobility rate}
 colleges$mobility_rate <- colleges$access_rate * colleges$success_rate

@@ -95,7 +95,7 @@ colleges$access_rate[colleges$name=="Middlebury College"]
 colleges$success_rate[colleges$name=="Middlebury College"]
 ```
 
-The product of these values is the proportion of all Middlebury students from the lowest income quintile who make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find the value for Middlebury:
+The product of these values is the proportion of all Middlebury students who are from the lowest income quintile and who make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find the value for Middlebury:
 
 ```{r calcualting the mobility rate}
 colleges$mobility_rate <- 
