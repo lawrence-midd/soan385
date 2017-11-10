@@ -2,7 +2,7 @@
 
 To begin, copy all the text on this screen. Then log in to https://rstudio.middlebury.edu, and in the "File" menu select "New File" then "R Markdown". Add a title like "SOAN 245 Workshop Week 9", include your name in the "Author" box, and click Ok. A default markdown file will open. Delete all the text in the default file and paste in the text you copied to your clipboard. Make sure that "R Markdown" is selected in the file type drop down menu in the bottom right corner of this pane. Save the file (in the R menu, not your browser menu!) in your "Home" folder on the R Studio server. 
 
-***Once the R Markdown file is saved, you can access it through the server in the future. You do not have to copy and paste it from the web link each time. The first place to look for it is in the "File" menu (in the R menu, not your browser menu!) under "Recent Files". Then you can skip to the next section***
+***Once the R Markdown file is saved, you can access it through the server in the future. You do not have to copy and paste it from the web link each time. The first place to look for it is in the "File" menu (in the R menu, not your browser menu!) under "Recent Files".***
 
 
 ## Once Your File Is Saved
@@ -37,14 +37,13 @@ colleges$par_top1pc[colleges$name=="Middlebury College"]
 The *NYT* chose to focus on the top 1%. The dataset also includes variables for the proportion of students from the top 5% and the top 10% that follow the same coding syntax as the variable for the proportion from the top 1%. Try to find the proportion of students at Middlebury from the top 5% and the proportion of students at a different institution from the top 10%:
 
 ```{r top 5% and top 10%}
-colleges$par_top5pc[colleges$name=="Middlebury College"]
-colleges$par_top10pc[colleges$name=="University Of Vermont And State Agricultural College"]
+
 ```
 
 After the top 10% of the income distribution, students are grouped by income quintile from quintile 1 (the bottom 20%) to quintile 5 (the top 20%). The variable for the proportion of students from the bottom 20% is `par_q1` and the variable for the proportion of students from the top 20% is `par_q5` with the other three quintiles in the middle. How would we use these variables to find the proportion of students from the bottom 60%?
 
 ```{r bottom 60%}
-colleges$par_bottom60pc <- colleges$par_q1 + colleges$par_q2 + colleges$par_q3
+colleges$par_bottom60pc <- 
 ```
 
 What proportion of Middlebury College studentes come from families in the bottom 60% of the income distribution?
@@ -81,7 +80,7 @@ college_ratios
 Find the rank for a college (that is not Middlebury and that is not in the top 10):
 
 ```{r ratio rank}
-college_ratios$rank[college_ratios$name=="University Of Vermont And State Agricultural College"]
+
 ```
 
 
@@ -99,8 +98,8 @@ colleges$success_rate[colleges$name=="Middlebury College"]
 The product of these values is the proportion of all Middlebury students from the lowest income quintile who make it to the top income quintile. Chetty et al call this measure the "mobility rate". Let's calculate this measure for all colleges and find the value for Middlebury:
 
 ```{r calcualting the mobility rate}
-colleges$mobility_rate <- colleges$access_rate * colleges$success_rate
-colleges$mobility_rate[colleges$name=="Middlebury College"]
+colleges$mobility_rate <- 
+
 ```
 
 Where does Middlebury's value fall in the overall distribution of mobility rates at four-year colleges?
@@ -126,25 +125,6 @@ The relationship between these two variables might be easier to interpret in a s
 
 ```{r scatterplot , message = FALSE, warning = FALSE}
 plot_sticker_price <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate))
-plot_sticker_price + geom_point() + geom_smooth(method = lm)
-```
-
-How do you think the relationship between sticker price and success rate could differ between public and private colleges?
-
-Here are the correlations for public vs private colleges:
-
-```{r}
-pub_priv <- colleges %>% group_by(public) %>% 
-          summarize(correlation = cor(sticker_price_2013, success_rate, use = "complete.obs")) %>% 
-     select(public, correlation)
-
-pub_priv
-```
-
-And here is a scatterplot with private colleges in pink and public colleges in blue:
-
-```{r scatterplot , message = FALSE, warning = FALSE}
-plot_sticker_price <- ggplot(colleges, aes(x = sticker_price_2013, y = success_rate, color = public))
 plot_sticker_price + geom_point() + geom_smooth(method = lm)
 ```
 
