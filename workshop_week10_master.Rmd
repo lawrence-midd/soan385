@@ -212,7 +212,7 @@ male_female_word_differences[1:25]
 Lastly, let's make a word cloud of the 100 most common female words. You will probably need to make this window a lot bigger to be able to see the result:
 
 ```{r female wordcloud}
-wordcloud(profiles$essay0[profiles$kids=="has kids"], 
+wordcloud(profiles$essay0[profiles$sex=="f"], 
 max.words = 100, scale=c(5,.5),random.order = TRUE, colors=brewer.pal(8, "Dark2"))
 ```
 
