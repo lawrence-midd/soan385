@@ -139,7 +139,7 @@ round(prop.table(table(profiles$sex, profiles$orientation),1),3)
 
 Let's turn to the `ethnicity` variable. How does sexual orientation differ by ethnicity in this sample? We'll start with a simple proportion table. Remember to pay attention to whether you want row or column proportions!
 
-```{r ethnicty and orientation proportions}
+```{r ethnicity and orientation proportions}
 
 ```
 
