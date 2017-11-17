@@ -101,7 +101,7 @@ t.test(profiles$age[profiles$sign_gemini==1], profiles$age[profiles$sign_gemini=
 
 The mean is only one summary statistic. And in some cases, only looking at the mean will obscure more interesting insights. Whenever possible, it is preferable to look at the full distribution of values.
 
-How would you expect the age distribution of OKC users to vary by age? We know the average age is very similar...but would you expect older or younger users to also be spread evenly by sex? 
+How would you expect the age distribution of OKC users to vary by sex? We know the average age is very similar...but would you expect older or younger users to also be spread evenly by sex? 
 
 Let's see how the shape of the age distribution varies by sex:
 
@@ -223,11 +223,17 @@ max.words = 100, scale=c(5,.5),random.order = TRUE, colors=brewer.pal(8, "Dark2"
 What else would you want to consider with word differences or word clouds? There are several other variables in the dataset that could be interesting to explore...
 
 ethnicity
+
 age
+
 orientation
+
 kids
+
 diet
+
 body_type
+
 religion
 
 To see the categories or levels for them, wrap them in a table:
