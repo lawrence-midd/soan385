@@ -91,12 +91,12 @@ They actually look very similar! Is the difference in means significant? To find
 t.test(profiles$age[profiles$sex=="f"], profiles$age[profiles$sex=="m"])
 ```
 
-An aside: What would the results look like if the mean difference was *not* significant?
 
-```{r testing differences in mean age by sign}
-profiles <- profiles %>% mutate(sign_gemini = ifelse(sign=="gemini",1,0))
-t.test(profiles$age[profiles$sign_gemini==1], profiles$age[profiles$sign_gemini==0])
-```
+
+
+
+
+
 
 
 The mean is only one summary statistic. And in some cases, only looking at the mean will obscure more interesting insights. Whenever possible, it is preferable to look at the full distribution of values.
@@ -131,7 +131,7 @@ That is the distribution across all users. How might it vary by sex?
 round(prop.table(table(profiles$sex, profiles$orientation)),3)
 ```
 
-Are these the proportions we want? What would proportions by row or by column tell us? Add a 1 for row proportions (because the variable in the rows is the first variable in our command).  Add a 2 for column proportions (because the variable in the rows in the second variable in our command).
+Are these the proportions we want? What would proportions by row or by column tell us? Add a 1 for row proportions (because the variable in the rows is the first variable in our command). Add a 2 for column proportions (because the variable in the rows in the second variable in our command).
 
 ```{r row and column orientation proportions by sex}
 round(prop.table(table(profiles$sex, profiles$orientation),1),3)
@@ -205,8 +205,8 @@ female_male_word_differences[1:25]
 Find the list of 25 words that most frequently appear in male users' profiles that *do not* appear in female users' profiles:
 
 ```{r male not female words}
-male_female_word_differences <- setdiff(male.words[1:500], female.words[1:500])
-male_female_word_differences[1:25]
+
+
 ```
 
 Lastly, let's make a word cloud of the 100 most common female words. You will probably need to make this window a lot bigger to be able to see the result:
@@ -235,25 +235,3 @@ To see the categories or levels for them, wrap them in a table:
 ```{r}
 table(profiles$kids)
 ```
-
-
-
-
-
-```{r}
-has_kids.words <- subset(essays, profiles$kids=="has kids") %>% str_split(" ") %>%
-     unlist() %>%
-     table() %>%
-     sort(decreasing=TRUE) %>%
-     names()
-
-no_kids.words <- subset(essays, profiles$kids=="no kids") %>% str_split(" ") %>%
-     unlist() %>%
-     table() %>%
-     sort(decreasing=TRUE) %>%
-     names()
-
-kids_word_differences <- setdiff(has_kids.words[1:500], no_kids.words[1:500])
-kids_word_differences[1:25]
-```
-
