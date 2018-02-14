@@ -1,2 +1,2 @@
-# soan245
-Social Life in an Age of Big Data
+# soan385
+Social Statistics
