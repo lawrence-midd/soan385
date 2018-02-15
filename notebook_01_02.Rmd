@@ -93,10 +93,10 @@ First, we need to install some packages. Packages are additional functions that 
 Here's the code to install the packages. You only have to install the packages once on any computer you use. Once your computer has the package installed, you can load the packages with the `library()` function.
 
 ```{r load packages, warning=FALSE, error=FALSE, include=FALSE}
-#install.packages("tidyverse")
-#install.packages("RCurl")
-library(tidyverse)
-library(RCurl)
+install.packages("tidyverse")
+install.packages("RCurl")
+#library(tidyverse)
+#library(RCurl)
 ```
 
 Next we'll get the data from the website. We do this in two lines: assigning the content of the webpage to an object called `hurricanes_raw_data` and then reading that object as a csv file and saving it as a data frame called `hurricanes`.
