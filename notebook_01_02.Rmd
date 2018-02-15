@@ -95,9 +95,11 @@ Here's the code to install the packages. You only have to install the packages o
 ```{r load packages, warning=FALSE, error=FALSE, include=FALSE}
 install.packages("tidyverse")
 install.packages("RCurl")
-#library(tidyverse)
-#library(RCurl)
+library(tidyverse)
+library(RCurl)
 ```
+
+Now that the packages are installed, you can put hashtags in front of the two `install.packages()` lines so they do not run again.
 
 Next we'll get the data from the website. We do this in two lines: assigning the content of the webpage to an object called `hurricanes_raw_data` and then reading that object as a csv file and saving it as a data frame called `hurricanes`.
 
