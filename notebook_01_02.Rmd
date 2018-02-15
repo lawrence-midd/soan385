@@ -110,7 +110,7 @@ hurricanes <- read.csv(text = hurricanes_raw_data)
 
 If the code above executed correctly, you should now see the data frame loaded and saved with the object name you created in the `environment` panel in the top right quadrant of R Studio. There should be 92 observations of 7 variables in the data frame named hurricanes.
 
-Click the white arrow to the left of the object name to see all the variables (Year, Name, etc.). Click the spreadsheet icon on the far right side of the data name row to open the full data frame. Note that the *variables* are in the columns and the *values* are in the rows, with each row representating a separate *observation* or *case*.
+Click the white arrow to the left of the object name to see all the variables (year, name, etc.). Click the spreadsheet icon on the far right side of the data name row to open the full data frame. Note that the *variables* are in the columns and the *values* are in the rows, with each row representating a separate *observation* or *case*.
 
 ## Types of Variables
 
@@ -130,10 +130,6 @@ By default, R will sort factor variables alphabetically. An easier way to see wh
 
 ```{r sort table}
 sort(table(hurricanes$name))
-```
-
-```{r sort table with decreasing}
-sort(table(hurricanes$name), decreasing=TRUE)
 ```
 
 Now let's look at another categorical factor variable - `male_female` - which identifies whether a hurricane has a male or female name. Try making a table of this variable to see how many hurricanes have male and female names.
@@ -156,7 +152,7 @@ How could you use R as a calculator to see that 67.39% of the hurricanes in this
 ### REPLACE THIS LINE WITH YOUR CODE CHUNK ###
 
 
-The summary() command is more helpful when numerical variables have many possible values because we get a snapshot of the distribution of values. Let's look at the `deaths` variable, which is the number of deaths per hurricane. This an example of a discrete variable. It is not a continuous variable because the values are whole numbers; for example, there are either 2 or 3 deaths, not 2.4 or 2.8.
+The summary() command is more helpful when numerical variables have many possible values because we get a snapshot of the distribution of values. Let's look at the `deaths` variable, which is the number of deaths per hurricane. This is an example of a discrete variable. It is not a continuous variable because the values are whole numbers; for example, there are either 2 or 3 deaths, not 2.4 or 2.8.
 
 Try summarizing the `deaths` variable to find the mean (or average) number of hurricane-related deaths in this sample:
 
