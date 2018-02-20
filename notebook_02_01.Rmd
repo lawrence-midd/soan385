@@ -136,6 +136,14 @@ colleges_top1pc_hi
 
 The other main variable in the NYT story is the proportion of students from the bototm 60%. That variable does not exist in our original colleges data frame. But there are five separate variables with the proportions of students in each quintile (lowest 20% = par_q1, second to lowest 20% = par_q2, middle 20% = par_q3, second to highest 20% = par_q4, highest 20% = par_q5). 
 
+Here are the distributions:
+- par_q1 = 0 - 19,800
+- par_q2 = 19,801 - 37,300
+- par_q3 = 37,301 - 65,300
+- par_q4 = 65,301 - 110,200
+- par_q5 = 110,201 +
+- par_top1pc = 630,500
+
 We need to create a variable for students from the bottom 60% by adding the proportions in the bottom three quintiles.
 
 This is another job for `dplyr`. The idea is to create a new dataframe (we'll call it `colleges2`) that will *mutate* our existing dataframe. Our mutation will be to add a new variable called `par_q123` that is the sum of `par_q1` and `par_q2` and `par_q3`. Here we go: 
