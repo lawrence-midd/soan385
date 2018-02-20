@@ -142,7 +142,7 @@ Here are the distributions:
 - par_q3 = 37,301 - 65,300
 - par_q4 = 65,301 - 110,200
 - par_q5 = 110,201 +
-- par_top1pc = 630,500
+- par_top1pc = 630,500 +
 
 We need to create a variable for students from the bottom 60% by adding the proportions in the bottom three quintiles.
 
