@@ -1,14 +1,3 @@
----
-title: "Visualizing Descriptives"
-author: "Matt Lawrence"
-date: "February 27, 2018"
-output:
-  html_document:
-    df_print: paged
-  html_notebook: default
-  pdf_document: default
----
-
 # Setting Up
 This week we will continue using the 2000-2014 waves of the General Social Survey. We are still focused on the `agekdbrn` variable but will start looking at how its distribution varies by education and race/ethnicity. Start by loading tidyverse and the data.
 
