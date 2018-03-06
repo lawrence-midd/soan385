@@ -5,7 +5,7 @@ Today we will be using data from Chetty et al's 2014 paper "Where Is The Land Of
 Load the data as a data frame called `cz` and load tidyverse and pander.
 
 ```{r load data and packages, echo = FALSE, warning = FALSE, message = FALSE}
-cz <- read.csv("/users/lawrence/desktop/385_data/commuting_zones.csv")
+cz <- read.csv("/commuting_zones.csv")
 library(tidyverse)
 library(pander)
 ```
