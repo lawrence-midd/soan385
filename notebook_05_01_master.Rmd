@@ -1,0 +1,213 @@
+---
+title: "More Association and Correlation"
+author: "Matt Lawrence"
+date: "March 13, 2018"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+Today we will continue using data from Chetty et al's 2014 paper "Where Is The Land Of Opportunity?". The `commuting_zones.csv` file on Canvas comes from the Equality of Opportunity Project's website which can be accessed [here](http://www.equality-of-opportunity.org).
+
+Load the data as a data frame called `cz` and load the usual packages.
+
+```{r load data and packages, include=FALSE}
+cz <- read.csv("/users/lawrence/desktop/385_data/commuting_zones.csv")
+library(tidyverse)
+library(pander)
+```
+
+Last week we began thinking about how two variables are associated by finding whether they were positively or negatively correlated and how weak or strong the correlation is. We looked at the variables measuring the proportion of workers in a commuting zone commuting 15 minutes or less, income, racial segregation, labor force participation, and a measure of upward mobility.
+
+When we finished last week, we were looking at the correlation between `commute15min` and `mobility`. How would you describe the correlation between these two variables?
+
+### REPLACE THIS LINE WITH YOUR CODE
+
+```{r commute mobility correlation}
+cor(cz$commute15min, cz$mobility, use = "complete")
+```
+
+
+And how can you make a scatterplot showing the correlation between these two variables?
+
+### REPLACE THIS LINE WITH YOUR CODE
+
+```{r mobility commute scatter, warning=FALSE}
+mobility_commute_scatter <- ggplot(cz, aes(x = commute15min, y = mobility))
+mobility_commute_scatter + geom_point()
+```
+
+The scatterplots Ryan Clement showed us on Thursday include a "line of best fit" to help visualize the direction and strength of correlations. We will do much more with these lines at the end of the semester. But for now, it could be good to know how to include them. To do so, add another layer to the plot with the `geom_smooth(method = lm)` function. The smooth function finds a pattern across all the points, and the `method = lm` option says we want the pattern to be based on the "linear model" used in basic regression models.
+
+```{r mobility commute scatter with line of best fit, warning=FALSE}
+mobility_commute_scatter <- ggplot(cz, aes(x = commute15min, y = mobility))
+mobility_commute_scatter + geom_point() + geom_smooth(method = lm)
+```
+
+
+Let's spend some time exploring a few of the other associations in our data. To start, use `select()` to create a new data frame called `cz_subset` with the following variables: 
+
+- `cz_name` = commuting zone name
+- `state` = commuting zone state
+- `mobility` = measure of absolute upward mobility
+- `gini` = Gini coefficient of income inequality; higher gini values indicate more inequality
+- `social_capital_index` = Social capital index
+- `frac_foreign_born` = Proportion of residents born in other countries
+- `frac_children_single_mothers` = Proportion of children living in single-parent households
+- `school_expenditures_per_student` = Average expenditures per student in public schools
+- `hs_dropout_rate_adj` = High school dropout rate adjusted for family income; positive values indicate that the hs dropout rate is larger than expected given a commuting zone's median family income, and negative values indicate that the hs dropout rate is smaller than expected given a commuting zone's median family income
+- `urban` = binary variable for urban (1) or rural (0) commuting zone
+- `hh_income` = median household family income in commuting zone
+- `racial_seg` = measure of racial segregation
+
+
+### REPLACE THIS LINE WITH YOUR CODE
+
+```{r create subset}
+cz_subset <- cz %>%
+     select(cz_name, state, mobility, gini, social_capital_index,
+            frac_foreign_born, frac_children_single_mothers, 
+            school_expenditures_per_student, hs_dropout_rate_adj,
+            urban, hh_income, racial_seg)
+```
+
+
+Take a few minutes to explore how some of the variables in the `cz_subset` data frame are associated with mobility. What is a relationship where you would expect a negative association? What is a relationship where you would expect a positive association? What is a relationship where you would expect no association?
+
+
+###REPLACE THIS LINE WITH YOUR CODE###
+
+###Positive = Social Capital (0.641)
+```{r positive association}
+cor(cz_subset$school_expenditures_per_student, cz_subset$mobility, use = "complete")
+```
+
+###Negative = Gini (-0.578)
+```{r negative association}
+cor(cz_subset$frac_children_single_mothers, cz_subset$mobility, use = "complete")
+```
+
+###None = Foreign Born (-0.027)
+```{r no association}
+cor(cz_subset$frac_foreign_born, cz_subset$hs_dropout_rate_adj, use = "complete")
+```
+
+
+
+# Correlation Matrix
+
+One way to save some time when looking at multiple correlations is to create a matrix with all the possible correlations in your dataframe. We can't use the first two variables in `cz_subset` since they are not numeric, but we can use variables 3 (`mobility`) through 12 (`racial_seg`). Let's get the matrix for correlations using all the rows and variables 3:12. In the chunk below, note the indexing with brackets. The blank space in front of the comma asserts we want to include all the rows, and the 3:12 after the comma asserts which columns we want to include: 
+
+```{r create matrix}
+matrix <- round(cor(cz_subset[ , 3:12], use = "complete.obs"),3) 
+```
+
+Let's review the matrix!
+
+```{r review matrix}
+matrix
+```
+
+To only see some of the matrix, use indexing!
+
+```{r matrix with indexing}
+matrix[1:4, 1:4]
+```
+
+
+# Introducing Multivariate Relationships - See Slides
+
+Last week we identified individual points on a scatterplot to dig deeper into how two variables are associated. Another analytical tool is to examine whether the association differs at specific values of another variable.
+
+Let's reconsider the correlation between racial segregation and income. Would you expect this correlation to be positive or negative? Strong or weak?
+
+###REPLACE THIS LINE WITH YOUR CODE
+```{r cor racial segregation and income}
+cor(cz_subset$racial_seg, cz_subset$hh_income, use = "complete")
+```
+
+Would this association be the same in urban and rural commuting zones?
+
+###REPLACE THIS LINE WITH YOUR CODE
+```{r cor racial segregation and income by urban}
+cor(cz_subset$racial_seg[cz_subset$urban==0], cz_subset$hh_income[cz_subset$urban==0], use = "complete")
+
+cor(cz_subset$racial_seg[cz_subset$urban==1], cz_subset$hh_income[cz_subset$urban==1], use = "complete")
+```
+
+We can visualize the different associations by geographic type if we use different colored points for urban and rural commuting zones. Before we get there, let's make sure the `urban` variable is recognized as a factor variable, and change the labels from "0" and "1" to "Rural" and "Urban".
+
+```{r make urban a factor variable}
+cz_subset <- cz_subset %>%
+     mutate(urban = factor(urban, levels=c("0", "1"), labels=c("Rural", "Urban")))
+```
+ 
+Now let's make the plot.
+```{r urban rural plot}
+urban_rural_plot <- ggplot(cz_subset, aes(x = hh_income, y = racial_seg, color = urban, shape = urban))
+urban_rural_plot + geom_point()
+```
+
+
+Extra Fancy: Remember we can use `facet_grid()` to display two plots in one figure. 
+
+```{r urban rural facets}
+urban_rural_facets <- ggplot(cz_subset, aes(x = hh_income, y = racial_seg))
+urban_rural_facets + geom_point(aes(color = urban)) + geom_smooth(method = lm) + facet_grid(.~urban) +
+scale_color_manual(values = c("Red", "Blue")) + guides(color = FALSE) +
+labs(x = "Median Income", y = "Racial Segregation",
+     title = "Rural-Urban Differences in Association\nBetween Income and Racial Segregation", subtitle = "Data from the Equality of Opportunity Project")
+```
+
+
+# Another Multivariate Example
+
+In the `cz_subset` dataframe, what is the correlation between the high school dropout rate and the fraction of children in a commuting zone who live in households headed by single mothers? How would you interpret this correlation?
+
+### REPLACE THIS LINE WITH YOUR CODE
+
+```{r cor hs dropout single mothers}
+cor(cz_subset$frac_children_single_mothers, cz_subset$hs_dropout_rate_adj, use = "complete")
+```
+
+How would you expect this association to vary by school expenditures? Specifically, would you expect the association to be weaker or stronger in commuting zones spending more or less than the national average for public school spending per student?
+
+Let's use `mutate` and `ifelse` to create a new variable called `expenditures_hi` which will take the value of 1 if a commuting zone spends more than the national mean and 0 if not. You can put this new variable in the `cz_subset` dataframe. Also create a new variable called `single_mothers_hi` which will take the value of 1 if a commuting zone's fraction of children living in households headed by single mothers is greater than the national mean and 0 if not.
+
+### REPLACE THIS LINE WITH YOUR CODE
+
+```{r create binary variables for expenditures and single mothers}
+cz_subset <- cz_subset %>% mutate(expenditures_hi = ifelse(school_expenditures_per_student>mean(school_expenditures_per_student, na.rm=TRUE),1,0),
+                 single_mothers_hi = 
+ifelse(frac_children_single_mothers>mean(frac_children_single_mothers, na.rm=TRUE),1,0)) %>%
+     filter(!is.na(expenditures_hi))
+```
+
+Now find the correlation between the high school dropout rate and the fraction of children in a commuting zone who live in households headed by single mothers in each category of school spending. How would you interpret these correlations?
+
+### REPLACE THIS LINE WITH YOUR CODE
+
+```{r correlations by expenditures}
+expenditures_correlations <- cz_subset %>% group_by(expenditures_hi) %>%
+     summarize(correlation = cor(hs_dropout_rate_adj, frac_children_single_mothers, use = "complete"))
+expenditures_correlations
+```
+
+Let's plot these correlations. We'll add the `group` and `color` aesthetics to distinguish the commuting zones with school expenditures higher and lower than the national mean. How would you interpret these associations?
+
+```{r plot by expenditures, warning = FALSE}
+plot <- ggplot(cz_subset, aes(x = frac_children_single_mothers, y = hs_dropout_rate_adj, 
+                       group = factor(expenditures_hi), color = factor(expenditures_hi)))
+plot + geom_point() + geom_smooth(method = lm)
+```
+
+In words, in commuting zones where school expenditures are higher than the national average, there appears to be a stronger association between the proportion of children living in households headed by single mothers and the adjusted high school dropout rate. The lines for the two expenditure categories intersect near the means of both the other variables. The steeper line for commuting zones with higher school expenditures suggests that those commuting zones have greater differences in adjusted high school dropout rates between commuting zones at the low end and high end of the distribution of the proportion of children living in households headed by single mothers.
+
+Finally, let's create a three-way table showing the mean adjusted high school dropout rate for each category of `expenditures_hi` and `single_mothers_hi`. We do so by adding both the categorical variables to our `group_by()` command:
+
+```{r three way table with group by}
+hs_dropout_table <- cz_subset %>% group_by(expenditures_hi, single_mothers_hi) %>%
+     summarize(mean_hs_dropout_rate = mean(hs_dropout_rate_adj*100, na.rm=TRUE))
+
+pander(hs_dropout_table)
+```
