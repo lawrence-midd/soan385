@@ -62,7 +62,7 @@ Take a few minutes to explore how some of the variables in the `cz_subset` data 
 
 # Correlation Matrix
 
-One way to save some time when looking at multiple correlations is to create a matrix with all the possible correlations in your dataframe. We can't use the first two variables in `cz_subset` since they are not numeric, but we can use variables 3 (`mobility`) through 12 (`racial_seg`). Let's get the matrix for correlations using all the rows and variables 3:12. In the chunk below, note the indexing with brackets. The blank space in front of the comma asserts we want to include all the rows, and the 3:9 after the comma asserts which columns we want to include: 
+One way to save some time when looking at multiple correlations is to create a matrix with all the possible correlations in your dataframe. We can't use the first two variables in `cz_subset` since they are not numeric, but we can use variables 3 (`mobility`) through 12 (`racial_seg`). Let's get the matrix for correlations using all the rows and variables 3:12. In the chunk below, note the indexing with brackets. The blank space in front of the comma asserts we want to include all the rows, and the 3:12 after the comma asserts which columns we want to include: 
 
 ```{r create matrix}
 matrix <- round(cor(cz_subset[ , 3:12], use = "complete.obs"),3) 
@@ -146,7 +146,7 @@ plot <- ggplot(cz_subset, aes(x = frac_children_single_mothers, y = hs_dropout_r
 plot + geom_point() + geom_smooth(method = lm)
 ```
 
-In words, in commuting zones where school expenditures are higher than the national average, there appears to be a stronger association between the proportin of children living in households headed by single mothers and the adjusted high school dropout rate. The lines for the two expenditure categories intersect near the means of both the other variables. The steeper line for commuting zones with higher school expenditures suggests that those commuting zones have greater differences in adjusted high school dropout rates between commuting zones at the low end and high end of the distribution of the proportion of children living in households headed by single mothers.
+In words, in commuting zones where school expenditures are higher than the national average, there appears to be a stronger association between the proportion of children living in households headed by single mothers and the adjusted high school dropout rate. The lines for the two expenditure categories intersect near the means of both the other variables. The steeper line for commuting zones with higher school expenditures suggests that those commuting zones have greater differences in adjusted high school dropout rates between commuting zones at the low end and high end of the distribution of the proportion of children living in households headed by single mothers.
 
 Finally, let's create a three-way table showing the mean adjusted high school dropout rate for each category of `expenditures_hi` and `single_mothers_hi`. We do so by adding both the categorical variables to our `group_by()` command:
 
