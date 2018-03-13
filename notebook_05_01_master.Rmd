@@ -1,18 +1,9 @@
----
-title: "More Association and Correlation"
-author: "Matt Lawrence"
-date: "March 13, 2018"
-output:
-  pdf_document: default
-  html_notebook: default
----
-
 Today we will continue using data from Chetty et al's 2014 paper "Where Is The Land Of Opportunity?". The `commuting_zones.csv` file on Canvas comes from the Equality of Opportunity Project's website which can be accessed [here](http://www.equality-of-opportunity.org).
 
 Load the data as a data frame called `cz` and load the usual packages.
 
 ```{r load data and packages, include=FALSE}
-cz <- read.csv("/users/lawrence/desktop/385_data/commuting_zones.csv")
+cz <- read.csv("commuting_zones.csv")
 library(tidyverse)
 library(pander)
 ```
