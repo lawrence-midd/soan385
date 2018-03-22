@@ -28,8 +28,8 @@ The lower limit of the confidence interval is the sample mean minus the margin o
 Let's save the lower limit and upper limit for the 95% confidence interval:
 
 ```{r save lower and upper limits for .95 confidence interval}
-height_ll <- (mean(cupid$height) - 2.58*height_se)
-height_ul <- (mean(cupid$height) + 2.58*height_se)
+height_ll <- (mean(cupid$height) - 1.96*height_se)
+height_ul <- (mean(cupid$height) + 1.96*height_se)
 ```
 
 It is often helpful to save the confidence interval and the mean as a vector:
