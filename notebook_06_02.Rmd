@@ -3,7 +3,7 @@
 Load the `cupid.csv` file on Canvas as a data frame called `cupid` and load the usual packages.
 
 ```{r load data and packages, include = FALSE, warning = FALSE}
-cupid <- read.csv("/users/lawrence/desktop/385_data/cupid.csv")
+cupid <- read.csv("/cupid.csv")
 library(tidyverse)
 library(pander)
 ```
