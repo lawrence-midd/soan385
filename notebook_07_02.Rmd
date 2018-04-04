@@ -40,7 +40,7 @@ gss_week7$kidssol[gss_week7$kidssol==""] <- NA
 
 Now create a binary variable called `kidssol_better` distinguishing the `kiddsol` values of "Much better" and "Somewhat better" from all other values:
 
-### REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE ###
 
 The `prop.test()` function requires the number of cases with a 1 and the total number of cases. To find those, wrap a `table()` function in the `addmargins()` function (to get the row total):
 
@@ -58,4 +58,4 @@ Can we reject the null hypothesis that the true proportion is .5?
 
 One more exercise: At the .01 level, can you reject the null hypothesis that the true proportion is .62?
 
-### REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE ###
