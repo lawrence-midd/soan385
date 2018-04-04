@@ -13,11 +13,11 @@ library(pander)
 
 R has a built-in function called `t.test()` that will calculate the test statistic, the p-value, and the confidence interval. For a test of one mean, we have to fill in the value of mu which is the null hypothesis value. If you leave it out, the default is zero.
 
-Can you reject the null hypothesis that the mean of `ideal_childs` in the full sample differs from 2.41 at the .05 alpha level?
+Can you reject the null hypothesis that the mean of `ideal_childs` in the full sample differs from 2.42 at the .05 alpha level?
 
 ### REPLACE THIS LINE WITH YOUR CODE ###
 
-Can you reject the null hypothesis that the mean of `ideal_childs` in the full sample differs from 2.41 at the .01 alpha level?
+Can you reject the null hypothesis that the mean of `ideal_childs` in the full sample differs from 2.42 at the .01 alpha level?
 
 ### REPLACE THIS LINE WITH YOUR CODE ###
 
