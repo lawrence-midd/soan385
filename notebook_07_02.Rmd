@@ -1,0 +1,61 @@
+## Setting Up
+
+Load the `gss_week7.csv` file on Canvas as a data frame called `gss_week7` and load the usual packages:
+
+```{r, include = FALSE, warning = FALSE}
+gss_week7 <- read.csv("~/gss_week7.csv")
+library(tidyverse)
+library(pander)
+```
+
+
+## Reviewing Significance Tests For Means 
+
+R has a built-in function called `t.test()` that will calculate the test statistic, the p-value, and the confidence interval. For a test of one mean, we have to fill in the value of mu which is the null hypothesis value. If you leave it out, the default is zero.
+
+Can you reject the null hypothesis that the mean of `ideal_childs` in the full sample differs from 2.41 at the .05 alpha level?
+
+### REPLACE THIS LINE WITH YOUR CODE ###
+
+Can you reject the null hypothesis that the mean of `ideal_childs` in the full sample differs from 2.41 at the .01 alpha level?
+
+### REPLACE THIS LINE WITH YOUR CODE ###
+
+
+## Significance Tests For Proportions
+
+Proportion tests use a different standard error. The R shortcut (`prop.test()`) also uses a different syntax.
+
+For this exercise, we will use the `kidssol` variable. At the .05 alpha level, is the proportion of respondents reporting their children's living standards will be "Much better" or "Somewhat better" different from .50?
+
+Before we use `ifelse()` to create the binary variable, we first have to fix some missing values. To see the problem we need to fix, make a table of the `kidssol` variable:
+
+### REPLACE THIS LINE WITH YOUR CODE ###
+
+There are 701 cases without a value for `kidssol`. We need to replace their blank value with NA so R knows how to handle them correctly:
+
+```{r}
+gss_week7$kidssol[gss_week7$kidssol==""] <- NA
+```
+
+Now create a binary variable called `kidssol_better` distinguishing the `kiddsol` values of "Much better" and "Somewhat better" from all other values:
+
+### REPLACE THIS LINE WITH YOUR CODE###
+
+The `prop.test()` function requires the number of cases with a 1 and the total number of cases. To find those, wrap a `table()` function in the `addmargins()` function (to get the row total):
+
+```{r table with sum using addmargins}
+addmargins(table(gss_week7$kidssol_better))
+```
+
+In the `prop.test()` code, the first number is the count of observations with a 1 and the second number is the sum:
+
+```{r prop test example 1}
+prop.test(306, 565)
+```
+
+Can we reject the null hypothesis that the true proportion is .5?
+
+One more exercise: At the .01 level, can you reject the null hypothesis that the true proportion is .62?
+
+### REPLACE THIS LINE WITH YOUR CODE###
