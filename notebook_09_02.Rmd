@@ -67,7 +67,7 @@ What are the odds for working class respondents?
 
 We interpret odds below 1 differently. In this case, working class respondents are .695 times as likely to support abortion as they are to not support abortion.
 
-##Odds Ratios
+## Odds Ratios
 Knowing how to calculate odds becomes more useful for understanding association when we construct odds ratios. In our example, the odds ratio for upper class vs working class respondents' beliefs in abortion is:
 
 ```{r}
@@ -75,7 +75,7 @@ Knowing how to calculate odds becomes more useful for understanding association 
 ```
 
 
-##Testing Associations With Ordered Variables
+## Testing Associations With Ordered Variables
 Use the chi-squared and Fisher's Exact tests when at least one of your categorical variables is not ordered. For ordinal variables, association works somewhat likes correlation. We'll use the Goodman Kruskal gamma test to measure association between ordered variables.
 
 For an example, look at the cross-table of `year` and `courts`:
@@ -113,7 +113,7 @@ The gamma statistic is positive, which means that respondents with more educatio
 
 In this case, we can reject the null hypothesis of no association since 4.6 is more extreme than 1.96.
 
-What about `class` and `courts`? (Assume for today that class can be ordered...)
+What about `class` and `courts`? (Assume for now that class can be ordered...)
 
 ###REPLACE THIS LINE WITH YOUR CODE###
 
