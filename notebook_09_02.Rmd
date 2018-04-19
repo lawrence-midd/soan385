@@ -29,7 +29,7 @@ What if we want to test the association between class and marital status only fo
 ###REPLACE THIS LINE WITH YOUR CODE###
 
 
-We have some cells with low expected frequencies here, so we need to use a different test. If the expected frequency is any cell is less than 5, use Fisher's Exact Test rather than the chi-squared test. Fisher's Exact Test uses the probability foundations we have seen previously to create 2000 samples of the variables we are testing and uses the principles of sampling distributions to estimate the p-value:
+We have some cells with low expected frequencies here, so we need to use a different test. If the expected frequency in any cell is less than 5, use Fisher's Exact Test rather than the chi-squared test. Fisher's Exact Test uses the probability foundations we have seen previously to create 2000 samples of the variables we are testing and uses the principles of sampling distributions to estimate the p-value:
 
 ```{r}
 fisher.test(immigrant$class, immigrant$marital, simulate.p.value = TRUE) 
