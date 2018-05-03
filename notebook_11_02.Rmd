@@ -87,17 +87,10 @@ To estimate a predicted gpa for our reference group, every term inside the paren
 
 For any other group, replace every "siblings" with the number of siblings and replace the class variables with a 1 (if you are predicting for that group) or 0 (if you are not predicting for that group). Don't forget the interaction terms!
 
-Try to estimate the predicted gpa for a middle class stuent with 2 siblings:
+Try to estimate the predicted gpa for a middle class student with 2 siblings:
 
 ###REPLACE THIS LINE WITH YOUR CODE###
 
-```{r}
-3.52009 - 0.09065*(2) - 0.02612*(1) + 
-0.01418*(0) + 0.05007*(0) + 
-0.09276*(2*1) + 
-0.08201*(0) + 
-0.08165*(0)
-```
 
 
 ##Plotting Interactions
