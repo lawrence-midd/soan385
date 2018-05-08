@@ -1,6 +1,6 @@
 ## Setting Up
 
-We''ll use the `midd_survey` data for this example. Load it and the usual packages.
+We'll use the `midd_survey` data for this example. Load it and the usual packages.
 
 ```{r, message = FALSE, warning = FALSE}
 library(tidyverse)
