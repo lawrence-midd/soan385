@@ -32,7 +32,7 @@ There are a few other things to add to make sure the file knits properly:
 
 - `results = "asis"` is the most important thing. It leaves the output in the format that knitr needs to render it. (Add this option to the open fence line; add everything else to the stargazer function line.)
 - `header = FALSE` deletes the contact information for the package author
-- `type = "latex"` converts the output into the Latex language that pandoc needs to knit to a PDF. Latex is the default so you can leave it off if you want. To change to web out put you would want to change `type = "latex"` to `type = "html"`.
+- `type = "latex"` converts the output into the Latex language that pandoc needs to knit to a PDF. Latex is the default so you can leave it off if you want. To change to  output you could use for a web publication, change `type = "latex"` to `type = "html"`.
 
 
 ```{r, results = 'asis', echo = FALSE}
