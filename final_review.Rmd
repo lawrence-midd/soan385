@@ -1,0 +1,325 @@
+## Load the csv file you just created from the GSS.R file. Save it as a data frame called `review` and load the usual packages.
+
+```{r, warning = FALSE, header = FALSE, message = FALSE}
+review <- read.csv("final_review.csv")
+library(tidyverse)
+library(pander)
+library(stargazer)
+```
+
+## Clean Up
+
+Start by making all the variable names lower case:
+
+```{r}
+names(review) <- tolower(names(review))
+```
+
+The big thing to do before starting analyses is to code all missing values as NA. Here's an example with `mutate`:
+
+```{r}
+review <- review %>%
+     mutate(age = ifelse(age == 99,NA,age),
+            educ = ifelse(educ == 0 | educ>20,NA,educ))
+```
+            
+Here's an example with indexing:
+
+```{r}
+review$relig16[review$relig16>=98] <- NA
+```
+
+Try replacing the missing values for `consci` and `intspace` using either of the above approaches.
+
+### REPLACE THIS LINE WITH YOUR CODE ###
+
+```{r}
+review <- review %>%
+     mutate(consci = ifelse(consci == 0 | consci>=8,NA,consci),
+            intspace = ifelse(intspace == 0 | intspace>=8,NA,intspace))
+```
+
+Sometimes it's easier to create new variables instead of changing the values and levels of existing variables. Here we'll create new variables called `science` (taking the values of `consci`) and `space` (taking the values of `intspace`).
+
+```{r}
+review <- review %>%
+     mutate(science = factor(consci,
+                             levels = c(3, 2, 1),
+                             labels = c("Hardly any", "Only some", "A great deal")),
+            space = factor(intspace,
+                           levels = c(3, 2, 1),
+                           labels = c("Not interested", "Moderately interested", 
+                                      "Very interested")))
+```
+
+We can also collapse some existing categories into bigger categories. We'll use the `relig16` variable as an example, creating a new variable called `religion` with broader categories. Here we'll put everyone in categories 6-9 in the "Eastern" category, and those who are not Eastern, Protestant, Catholic, Jewish, or None in "Other":
+
+```{r}
+review <- review %>%
+     mutate(religion = ifelse(relig16 == 1, "Protestant",
+                              ifelse(relig16 == 2, "Catholic",
+                                     ifelse(relig16 == 3, "Jewish",
+                                            ifelse(relig16 == 4, "None",
+                                                   ifelse(relig16 %in% 6:9, "Eastern", 
+                                                          "Other"))))),
+            religion = factor(religion,
+                              levels = c("Protestant", "Catholic", "Jewish",
+                                         "Eastern", "Other", "None")))
+```
+
+
+## Three Way Table
+
+For each religious category, we want to know the proportion with each level of confidence in science who are in each category of interest in space. One straightforward way to do this is to wrap a flat table (using ftable) in prop.table(). Read the ftable variables from left to right, so religion is our control variable here and we are holding it constant to look at the association between confidence in science and interest in space exploration.
+
+```{r}
+pander(round(prop.table(ftable(review$religion, review$science, review$space),1),3))
+```
+
+How could we recreate the same table using `group_by()` and `summarise()`? For that approach, we would need binary variables for each of the `space` categories. This might seem like a lot more work, but in the long run it is probably more efficient since it will allow you to manipulate the variables for other purposes later.
+
+```{r}
+review <- review %>%
+     mutate(space_not_interested = ifelse(space=="Not interested",1,0),
+            space_moderately_interested = ifelse(space=="Moderately interested",1,0),
+            space_very_interested = ifelse(space=="Very interested",1,0))
+```
+
+For each combination of `religion` and `science`, we can now summarize the means of each space binary variable:
+
+```{r}
+space_summary <- review %>%
+     group_by(religion, science) %>%
+     summarise(not_interested = round(mean(space_not_interested, na.rm=TRUE),3),
+               moderately_interested = round(mean(space_moderately_interested, na.rm=TRUE),3),
+               very_interested = round(mean(space_very_interested, na.rm=TRUE),3))
+
+space_summary
+```
+
+Those NAs for `science` are annoying. One way to get rid of them is to filter them out. You can do that with an extra line in the chunk above. But we'll redo the whole chunk to compare them, though note it's not necessary to run this twice:
+
+```{r}
+space_summary <- review %>%
+     group_by(religion, science) %>%
+     summarise(not_interested = round(mean(space_not_interested, na.rm=TRUE),3),
+               moderately_interested = round(mean(space_moderately_interested, na.rm=TRUE),3),
+               very_interested = round(mean(space_very_interested, na.rm=TRUE),3)) %>%
+     filter(!is.na(science)) #This line says keep (filter) the observations that are not na for science
+
+space_summary
+```
+
+## Dealing With NAs In Other Functions
+For mean and standard deviation, remove NAs by adding `na.rm = TRUE`:
+
+```{r}
+mean(review$age)
+mean(review$age, na.rm = TRUE)
+
+sd(review$educ)
+sd(review$educ, na.rm = TRUE)
+```
+
+For correlation, restrict the estimation to cases with values for both variables by adding `use = "complete"`:
+
+```{r}
+cor(review$age, review$educ, use = "complete")
+```
+
+For ggplot, R knows to only use complete cases but will warn you that it is doing so. To drop the warning, add `warning = FALSE` to the start of the code chunk:
+
+```{r, warning = FALSE}
+plot <- ggplot(review, aes(x = educ))
+plot + geom_density()
+```
+
+Basic linear models also know to drop NAs. The notes section of the summary informs you how many cases have been deleted from the estimates (in the example below, 3365 observations are deleted due to missingness).
+
+***This is new: notice how we are redefining the science factor variable to have a numeric scale in the chunk below. Each of the three factor levels will be assigned a number from 1-3. Since we asserted that the order of levels is "Hardly any" / "Only some" / "A great deal", now higher scores tell us that respondents have more confidence in scientific institutions. (This is a neat trick, but in general be careful with this approach. It only works if you can assume that the distance between each level is even.)***
+
+```{r}
+model <- lm(as.numeric(science) ~ educ, data = review)
+summary(model)
+```
+
+By default, the `fitted()` function will not work if there are NAs in your model. If you want to save predicted values from a model with missing values, add `na.action = na.exclude` to your `lm()` code. Now when you run the `fitted()` function any observations not inlcuded in your model will have NA as their predicted value.
+
+```{r}
+model <- lm(as.numeric(science) ~ educ, data = review, na.action = na.exclude)
+review$predicted_science <- fitted(model)
+summary(review$predicted_science)
+```
+
+
+## More Thoughts On Plotting
+
+Always remember to label your axes and plots!
+
+```{r, warning = FALSE}
+plot <- ggplot(review, aes(x = educ, y = predicted_science))
+plot + geom_point() +
+     labs(x = "Years of Education", y = "Predicted Score on Scale of Confidence in Science",
+          title = "Confidence in Scientific Community by Years of Education",
+          subtitle = "GSS, 2010-2016")
+```
+
+
+
+# Using Markdown For Reports
+
+## Hiding Code and Inline Code
+Let's start with a case where your output is a single number, like a mean. Imagine you are working on the descriptives part of your project and want to include the mean of age. The place to start is with a regular code chunk with the `mean()` function:
+
+```{r}
+mean(review$age, na.rm=TRUE)
+```
+
+But say you want R to run a code chunk and have only the output - not the code! - show up in your file. Simply add `echo = FALSE` to the first fence:
+
+```{r, echo = FALSE}
+mean(review$age, na.rm=TRUE)
+```
+
+If you want to integrate a single number into your document, you can use inline code. Without opening a full code chunk, just use one backtick to open and close your fence. Then write a sentence as you normally would, and let R Markdown replace your code with the output:
+
+The mean of age is `r round(mean(review$age, na.rm=TRUE),2)`.
+
+## Other Options For Hiding Code
+If you want to run the code chunk so you can see the output in your notebook but with neither the code nor the output showing up in your knitted file, use `include = FALSE`.
+
+```{r, include = FALSE}
+mean(review$age, na.rm=TRUE)
+```
+
+I would probably recommend starting with `include = FALSE` for your final project, so you can see all your output but then selectively choose what to include and what not to include in your knitted report.
+
+If for some reason you want to show the code but not the output, use `eval = FALSE`.
+
+```{r, eval = FALSE}
+mean(review$age, na.rm=TRUE)
+```
+
+## R Markdown Tips
+
+Some other things to know about writing in R Markdown...
+
+Use hashtags for headings. One hashtag is for a big heading; additional hashtags shrink the size. For example:
+
+# Biggest Heading
+
+## Big Heading
+
+### Small Heading
+
+#### Smallest Heading
+
+If you want to italicize text, *wrap it within single asterisks*. If you want to bold text, **wrap it within double asterisks**. And if you want to italicize *and* bold text, ***wrap it within triple asterisks***.
+
+It can sometimes be helpful to highlight original variable names or unusual terms within tickmarks. But note this is similar to the inline code we saw earlier. As long as the word or phrase does not start with a single r, R will not try to run it as code. See the preview file for the difference in what these tickmarks represent:
+
+The mean of `age` is `r round(mean(review$age),2)`.
+
+To create an ordered list, leave an empty line and then:
+
+- Start
+- Each
+- Item
+- With 
+- A
+- Dash
+
+To create a numbered list, leave an empty line and then:
+
+1. Start
+2. Each
+3. Item
+4. With
+5. A
+6. Number and a period
+
+To add a horizontal line rule, include at least three dashes on a single line:
+
+---
+
+And to add a page break:
+
+\pagebreak
+
+This should be the start of a new page!
+
+# It's Also The Start Of A New Section
+
+## Formatting Summary Tables 
+
+We have seen `pander()` a lot. It's great. Use it. 
+
+One additional way to use `pander()` is to combine it with `group_by()` and `summarize()` to make a nice summary table. Let's start with the code for getting means and standard deviations of the `age` and `educ` variables for each `religion` group:
+
+```{r, echo = FALSE}
+summary_table <- review %>% 
+     filter(!is.na(religion)) %>%
+     group_by(religion) %>% 
+     summarize(mean_age = round(mean(age, na.rm=TRUE),2),
+               sd_age = round(sd(age, na.rm=TRUE),2),
+               mean_educ = round(mean(educ, na.rm=TRUE),2),
+               sd_educ = round(sd(educ, na.rm=TRUE),2))
+```
+
+If we pander this table, we'll have the religion categories in the rows and the means and standard deviations in the columns:
+
+```{r, echo = FALSE}
+pander(summary_table)
+```
+
+To switch the rows and columns, *transpose* the table with the `t()` function: 
+
+```{r, echo = FALSE}
+transposed_table <- t(summary_table)
+pander(transposed_table)
+```
+
+And recall that you can use `rownames()` to change the row names:
+
+```{r, echo = FALSE}
+rownames(transposed_table) <- c("", "Age Mean", "SD", "Education Mean", "SD")
+pander(transposed_table)
+```
+
+Note that `pander()` also works well with `t.test()`... 
+
+```{r, echo = FALSE}
+panderOptions('table.split.table' , Inf)  # This command tells pander not to break a long table into two rows
+pander(t.test(review$age[review$religion=="Jewish"], review$age[review$religion=="Eastern"]))
+```
+
+...and `prop.test()`...
+
+```{r, echo = FALSE}
+space_religion <- review %>%
+     filter(religion=="Protestant" | religion=="None") %>%
+     select(religion, space_very_interested) %>%
+     droplevels()
+
+space_religion_table <- table(space_religion$religion, space_religion$space_very_interested)
+pander(prop.test(space_religion_table))
+```
+
+...and `chisq.test()`...
+
+```{r, echo = FALSE}
+pander(chisq.test(review$sex, review$consci))
+```
+
+...and `fisher.test()`...
+
+```{r, echo = FALSE}
+
+educ_11_years_only <- review %>%
+     filter(educ==11) %>%
+     select(educ, religion, space)
+
+chisq.test(educ_11_years_only$religion, educ_11_years_only$space)$expected
+
+pander(fisher.test(educ_11_years_only$religion, educ_11_years_only$space, simulate.p.value = TRUE))
+```
