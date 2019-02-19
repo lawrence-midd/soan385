@@ -12,7 +12,7 @@ How many observations and variables are there in this data frame?
 
 ## Reviewing Tables and Summaries
 
-Let's do a quick review of the functions we looked at last week. If you want to know how many colleges in this data frame are in each region, how would you do so? Based on the table, what is the *modal value* of the `region` variable?
+Let's do a quick review of the functions we looked at last week. If you want to know how many colleges in this data frame are in each region, how would you do so? What is the *modal value* of the `region` variable?
 
 ### Replace this line with your code.
 
@@ -25,7 +25,7 @@ sort(table(colleges$region))
 
 We had a very quick look at how to index last week. Indexing allows you to run a function or display values for one variable by specific values of that same variable or a different variable. We index with [brackets]. 
 
-Suppose we want to find the `region` that Middlebury College is in. More formally, we want to pull the one value of the `region` variable for the observation whose value for the `name` variable is `Middlebury College`. Since we are only referencing one value of the `name` variable, we identify it with two equal signs. Note that we also have to put "Middlebury College" in quotation marks since it is a character value rather than a numerical value:
+Suppose we want to find the `region` that Middlebury College is in. More formally, we want to pull the value of the `region` variable for the observation whose value for the `name` variable is `Middlebury College`. Since we are only referencing one value of the `name` variable, we identify it with two equal signs. Note that we also have to put "Middlebury College" in quotation marks since it is a character value rather than a numerical value:
 
 ```{r indexing}
 colleges$region[colleges$name=="Middlebury College"]
@@ -96,12 +96,13 @@ Based on this spread, there are very few colleges with higher proportions of stu
 quantile(colleges$par_top1pc, c(.90, .95))
 ```
 
-Middlebury's value is way higher than even the 95th percentile! Try the 99th and 99.9th percentiles.
+Middlebury's value is higher than even the 95th percentile! Try the 99th and 99.9th percentiles.
 
 ### Replace this line with your code.
 
 
 So Middlebury ranks *within* the top 1% of all colleges for the proportion of students *from* the top 1% of the family income distribution. 
+
 
 
 Let's find some of the other colleges with similar proportions.
