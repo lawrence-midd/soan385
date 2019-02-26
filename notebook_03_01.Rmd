@@ -137,3 +137,8 @@ agekdbrn_college_plot + geom_density(alpha = .1) +
           subtitle = "General Social Survey, 2000-2014") 
 ```
 
+
+
+# Don't Panic!
+If you can't download the csv file and save it to your working directory, you can access it here:
+https://raw.githubusercontent.com/lawrence-midd/soan385/spring2019/gss_week3.csv
