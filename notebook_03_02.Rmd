@@ -285,7 +285,7 @@ med_agekdbrn_edcat_plot + geom_col() +
   labs(x = "Highest Degree", y = "Median Age at First Birth", 
        title = "Median Age at First Birth by Highest Degree", 
        subtitle = "GSS, 2000-2014") +
-theme(axis.title=element_text(size=12), # Changes size of axes titles
-      axis.text=element_text(size=8)) # Changes size of axes labels
+theme(axis.title=element_text(size=12), # Changes size of axis titles
+      axis.text=element_text(size=8)) # Changes size of axis labels
 ```
 
