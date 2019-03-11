@@ -3,7 +3,7 @@ Today we will continue using data from Chetty et al's 2014 paper "Where Is The L
 Load the data as a data frame called `cz` and load the tidyverse and pander packages.
 
 ```{r load data and packages, include=FALSE}
-cz <- read.csv("/users/lawrence/desktop/soan385_data/commuting_zones.csv")
+cz <- read.csv("commuting_zones.csv")
 library(tidyverse)
 # install.packages("pander")
 # remove the hashtag in the previous line if you need to install pander
