@@ -76,10 +76,11 @@ Today we'll find the 95% confidence interval for the proportion of OK Cupid user
 
 How does the distribution of `orientation` vary by sex?
 
+### REPLACE THIS LINE WITH YOUR CODE
 
 To calculate the standard error for the proportion of all respondents self-report as gay, we need a way to calculate `p(1-p)`. The insight here is that if we create a new binary variable where respondents self-reporting as gay are coded 1 and respondents self-reporting as bisexual or straight are coded 0, the value of p will be the proportion of cases with a 1, which is also the mean of the binary variable.
 
-We can create that new binary variable by combining `mutate()` with the `ifelse()` function. In words, the `ifelse()` function below says that we will add to the existing `cupid` data frame a new variable called `gay` that will take the value 1 if the value for the orientation variable is `gay` and will take the value 0 if the value for the orientation variable is anything else. Try it.
+We can create that new binary variable by combining `mutate()` with the `ifelse()` function. Use the `ifelse()` function to add to the existing `cupid` data frame a new variable called `gay` that will take the value 1 if the value for the orientation variable is `gay` and will take the value 0 if the value for the orientation variable is anything else.
 
 ### REPLACE THIS LINE WITH YOUR CODE
 
