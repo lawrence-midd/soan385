@@ -3,7 +3,7 @@
 We'll use the `week_8_1.csv` file today. Load it as a data frame called `week_8_1` and load the usual packages.
 
 ```{r, include = FALSE, warning = FALSE, message = FALSE}
-week_8_1 <- read.csv("/users/lawrence/desktop/385_data/week_8_1.csv")
+week_8_1 <- read.csv("week_8_1.csv")
 library(tidyverse)
 library(pander)
 ```
