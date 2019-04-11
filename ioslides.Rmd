@@ -1,10 +1,17 @@
+---
+title: "Preparing HTML Slides in R Markdown"
+author: "Matt Lawrence"
+date: "4/9/2019"
+output: ioslides_presentation
+---
+
 ## Getting Started
 
 To begin, copy all the text on this screen. Then open RStudio, and in the "File" menu select "New File" then "R Markdown". In the box on the left, click "Presentation". Add a title (in the title box) and your name (in the author box), select "HTML (ioslides)" as the Default Output Format, and click Ok. 
 
 A default markdown file will open. Delete all the text in the default file below the header (everything after line 7) and paste in the text you copied to your clipboard. Make sure that "R Markdown" is selected in the file type drop down menu in the bottom right corner of this pane. Save this file in your working directory.
 
-## Knit To Slides!
+## Press Knit To Make Slides!
 
 To see your slides, it's best to open the file in a browser (preferably Google Chrome).
 
@@ -111,7 +118,7 @@ plot + geom_point()
 
 Printing works best when you open the html file in Google Chrome. 
 
-In Chrome, save the file as a PDF and make sure the "Background Graphics" button is selected in the "More Settings" menu.
+In Chrome, choose Print from the File menu. Select the "Save as PDF" destination and make sure the "Background Graphics" button is selected in the "More Settings" menu.
 
 
 ## Colors
