@@ -13,29 +13,30 @@ gss_week11 <- read.csv("gss_week11.csv")
 
 **Warm Up 1:** Regress age at first birth (`agekdbrn`) on years of education (`educ`)
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 Predict age at first birth for respondents with 16 years of education:
 
-###REPLACE THIS LINE WITH YOUR CODE###
-
+### REPLACE THIS LINE WITH YOUR CODE
 
 **Warm Up 2:** Regress age at first birth (`agekdbrn`) on highest degree (`degree`). Use "College Degree" as the reference group.
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 Predict age at first birth for respondents with a graduate or professional degree:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 
 **Warm Up 3:** Regress having a first child at age 30 or later (`agekdbrn_30plus`) on religion (`religion`). Use "Protestant" as the reference group.
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 Predict probability of having a first child at age 30 or later for Jewish respondents:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 
 ## Introducing Multiple Regression
@@ -45,8 +46,8 @@ Why do we control for other variables? The idea is to find another variable, *ho
 In R, include more variables by linking them to the independent variable with a plus sign. In this example, we want to regress age at first birth on education, holding religion constant:
 
 ```{r}
-agekd_educ_religion <- lm(agekdbrn ~ 
-educ + religion, data = gss_week11)
+agekd_educ_religion <- lm(agekdbrn ~ educ + religion, 
+                          data = gss_week11)
 
 summary(agekd_educ_religion)
 ```
@@ -59,11 +60,12 @@ To find the predicted values, need to use the full equation. For example, to pre
 
 Predict age at first birth for a Catholic respondent with 16 years of education:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 Predict age at first birth for respondent from an Eastern religion with 13 years of education:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 How do we make sense of this in a plot? The slopes (betas) are the same for every value of the control variable. But the intercepts are different.
 
@@ -93,20 +95,22 @@ agekd_educ_religion_plot + geom_point(color = "Light Gray") +
 
 Models can have as many control variables as you want. Just continue adding them with plus signs. Let's try regressing age at first birth on education, religion, and race:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 What is the predicted age at first birth for a Black Protestant with 17 years of education?
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 What is the predicted age at first birth for a Hispanic with no religious affiliation with 14 years of education?
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 
 ## Comparing Models, Introducing R-Squared
 
-R-squared is the proportional reduction in the error from using the model. We'll calculate r-squared for the model regressing number of memberships on years of education.
+The r-squared value is the proportional reduction in the error from using the model. We'll calculate r-squared for the model regressing number of memberships on years of education.
 
 ```{r}
 memnum_educ_model <- 
@@ -118,12 +122,11 @@ summary(memnum_educ_model)
 The r-squared value is 0.1144. Where does that number come from?
 
 ```{r}
-#Save the predicted values of Y:
+# Save the predicted values of Y:
 gss_week11$pred_memnum <- 
 fitted(memnum_educ_model)
 
-#Find the residuals (the observed values of Y minus the predicted values of Y) 
-#and square them:
+# Find the residuals (the observed values of Y minus the predicted values of Y) and square them:
 gss_week11$res_memnum <- 
 (gss_week11$memnum - gss_week11$pred_memnum)^2
 
@@ -132,6 +135,7 @@ gss_week11$dev_memnum <-
 (gss_week11$memnum - mean(gss_week11$memnum))^2
 
 #Sum the squared deviations and subtract the sum of the squared residuals.
+
 #Divide this difference by the sum of the squared deviations:
 rsquared <- ((sum(gss_week11$dev_memnum)) - 
                   (sum(gss_week11$res_memnum))) /
@@ -144,10 +148,10 @@ rsquared
 To Find Adjusted R-squared:
 
 ```{r}
-#adjusted_rsquared = 
-#1 - (((1 - rsquared)*(n-1)) / (n-k-1))
+# adjusted_rsquared = 
+# 1 - (((1 - rsquared)*(n-1)) / (n-k-1))
 
-#n = sample size; k = number of variables
+# n = sample size; k = number of variables
 
 adjusted_rsquared <- 
 1 - (((1 - rsquared)*(1924-1)) / (1924-1-1))

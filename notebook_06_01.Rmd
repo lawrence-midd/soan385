@@ -20,16 +20,16 @@ $\Large{z = \frac{x-\mu}{\sigma} = \frac{x - mean}{sd}}$
 
 Find the z-score for your height (in inches) using the `height` variable:
 
-###REPLACE THIS LINE WITH YOUR CODE###
-
+### REPLACE THIS LINE WITH YOUR CODE
 
 Find the probability that someone in this sample will be shorter than you:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 Find the probability that someone in this sample will be taller than you:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 
 
@@ -102,4 +102,9 @@ How do you interpret this confidence interval? 95% of the repeated samples we mi
 
 What is the 99% confidence interval for height?
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
+
+What is the 90% confidence interval for age?
+
+### REPLACE THIS LINE WITH YOUR CODE

@@ -1,79 +1,99 @@
-# Setting Up
+# Wrapping Up From Tuesday
 
-Load the `counties.csv` file on Canvas as a data frame called `counties` and load the usual packages:
+We'll start by finishing up a few last things about multivariate descriptives. Load the commuting zones dataset as a data frame called `cz` and load the usual packages. You can read in the dataset using the linked csv file today.
 
-```{r load data and packages, echo = FALSE, warning = FALSE, message = FALSE}
-counties <- read.csv("/counties.csv")
+```{r setting up data and packagaes, warning = FALSE, error = FALSE, message = FALSE}
+
+cz <- read.csv("https://raw.githubusercontent.com/lawrence-midd/soan385/spring2019/commuting_zones.csv")
+
 library(tidyverse)
 library(pander)
 ```
 
+We will use the `urban` variable as a factor variable again:
 
-# Summarizing Multiavariate Relationships
-
-As a warm up, use `group_by` to compare the mean teen birthrates for counties with mobility rates higher than the national average (`mobility_hi` = 1) and for counties with mobility rates lower than the national average (`mobility_hi` = 0).
-
-### REPLACE THIS LINE WITH YOUR CODE
-
-
-
-On Tuesday, we discussed how we can begin to explain associations between two variables by controlling for (or holding constant) a third variable. To summarize multivariate descriptives, we can extend `group_by` to make a table with three (or more!) variables. All we have to do is put the two x variables in the `group_by` function, listing the control variable first. 
-
-In this example, the state will be the control variable, and we will filter to only include counties from the states of New York, California, Illinois, Connecticut, and New Mexico for simplicity:
-
-```{r create three way table}
-three_way_table <- counties %>%
-     filter(state == "New York" | state == "California" |
-                 state == "Illinois" | state == "Connecticut" |
-                 state == "New Mexico") %>%
-     group_by(state, mobility_hi) %>%
-     summarize(mean_teen_birthrate = mean(teen_birthrate, na.rm=TRUE))
-
-pander(three_way_table)
+```{r make urban a factor variable}
+cz <- cz %>%
+     mutate(urban = factor(urban, 
+                           levels=c("0", "1"), 
+                           labels=c("Rural", "Urban")))
 ```
 
-Other functions we have looked at also work when describing three variables. For example, we could do a proportion table. This time we will look at the proportion of counties in each state that have values for the commute variable and the mobility variable above the mean.
+We finished on Tuesday with a table that showed the mean racial segregation value in each quintile of median income for rural and urban commuting zones. Here's that table:
 
-```{r regular table with three variables}
-counties_subset <- counties %>%
-     filter(state == "New York" | state == "California" |
-                 state == "Illinois" | state == "Connecticut" |
-                 state == "New Mexico") %>%
-     droplevels() #droplevels gets rid of the levels for the factor variable (state) that we are not including in the subset
+```{r start by creating the quintiles}
+cz_quintiles <- cz %>%
+     mutate(quintile = ntile(hh_income, 5)) %>% 
+     # Nice trick to get quintiles!
+     group_by(quintile, urban) %>% 
+     # Grouping by multiple variables
+     summarize(mean_racial_seg = round(mean(racial_seg),3)) 
+     # Round here
 
-three_way_table_2 <- table(counties_subset$state, counties_subset$commute_hi, counties_subset$mobility_hi)
-
-pander(three_way_table_2)
+pander(cz_quintiles)
 ```
 
-If you want proportions for a table with three variables, it is preferable to combine `prop.table()` with a flat table using the `ftable()` function.
+In the table above we have long data but might prefer wide data. This would be a good time to use `spread()` rather than `gather()`. In the `spread()` line, we are saying we want to create a column for each level of the `urban` variable (so a column called `Rural` and a column called `Urban`), and we want the values of those variables to be the values of `mean_racial_seg` for each quintile-urban combination.
 
-```{r flat table}
-round(prop.table(ftable(counties_subset$state, counties_subset$commute_hi, counties_subset$mobility_hi),1),2)
+```{r spread example}
+
+cz_spread <- cz_quintiles %>%
+     spread(urban, mean_racial_seg)
+
+cz_spread
+```
+
+Pander will make this table prettier...
+
+```{r pander the spread table}
+pander(cz_spread)
+```
+
+How could we visualize these three way relationships?
+
+One option for a plot is to use side by side *columns*. Why do we need to use the long data for this visualization rather than the wide data?
+
+```{r columns with dodge}
+quintile_plot1 <- ggplot(cz_quintiles, aes(x = quintile, y = mean_racial_seg,
+                                          fill = urban, 
+                                          label = mean_racial_seg))
+
+quintile_plot1 + geom_col(position = "dodge") + # For side by side columns
+     geom_text(position = position_dodge(1), vjust = -.25) +
+     guides(fill = FALSE)
+```
+
+How would you describe how the relationship between income and racial segregation varies between urban and rural commuting zones?
+
+Maybe side by side plots (rather than side by side columns) would be preferable...
+
+```{r columns with facets}
+quintile_plot2 <- ggplot(cz_quintiles, aes(x = quintile, y = mean_racial_seg,
+                                           fill = urban))
+
+quintile_plot2 + geom_col() + 
+     geom_text(aes(label = mean_racial_seg, vjust = -.25)) + 
+     facet_grid(.~urban) + guides(fill = FALSE)
 ```
 
 
-# More On Missing Data
+Want better colors? I like the [`viridis color palettes`](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html).
 
-In the tables above, we can see that some counties are missing values for the `teen_birthrate` variable. How do we summarize the distribution of a variable if there are missing values? (Use the full counties dataframe here.)
-
-### REPLACE THIS LINE WITH YOUR CODE 
-
-
-We can see this dataframe includes 350 counties missing values for the teen_birthrate variable. There are two reasons data can be missing:
-
-- *Missing At Random*: no association between probability of a variable having missing values and the values of another variable
-
-- *Missing Not At Random*: there is an association between the probability of a variable having missing values and the values of another variable. This is a bigger problem!
-
-Usually we would want to investigate whether there are differences in other variables between observations that are missing values and observations that are not missing values. In this case, the counties missing values for the `teen_birthrate` variable are also missing values for all the other variables. Let's drop all those counties using filter, and summarize the distribution to confirm they are gone:
-
-```{r drop missing values}
-counties <- filter(counties, !is.na(teen_birthrate))
-summary(counties$teen_birthrate)
+```{r facet plot with viridis palette}
+quintile_plot2 + geom_col() + 
+     geom_text(aes(label = mean_racial_seg, vjust = -.25)) +
+     facet_grid(.~urban) + guides(fill = FALSE) +
+     scale_fill_viridis_d() # _d is for discrete; _c is for continuous 
 ```
 
 
+# Transitioning to Probabilty
+
+Let's move from multivariate descriptions to probability. We'll also switch datasets to look at some distributions across counties rather than commuting zones. Load the counties dataset to get started.
+
+```{r load data and packages, echo = FALSE, warning = FALSE, message = FALSE}
+counties <- read.csv("https://raw.githubusercontent.com/lawrence-midd/soan385/spring2019/counties.csv")
+```
 
 
 ### BACK TO SLIDES; WE'LL RETURN TO R SOON ###
@@ -95,26 +115,24 @@ counties <- mutate(counties,
 
 Z-scores should be normally distributed with a mean of 0 and a standard deviation of 1. Were we successful?                        
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 
-What is the z-score for Addison County, Vermont's birth rate?
+What is the z-score for Addison County, Vermont's birth rate? (Note that in the counties dataset you have to use the state's full name, not its abbreviation.)
 
-###REPLACE THIS LINE WITH YOUR CODE###
-
-
-
-When we plot standardized values that are approximately normal, we now know a lot about how many observations fall along different points of the distribution. Make a density plot showing the distribution of the standardized teen birthrates:
-
-###REPLACE THIS LINE WITH YOUR CODE
+### REPLACE THIS LINE WITH YOUR CODE
 
 
-Each point on the y-axis is the probability of getting that exact value. To find the probability of getting any z-score, use `dnorm()`. Think about this value as the y axis point on the density curve for any specific value on the x axis. For example, the probability that a randomly pulled county would have the same birthrate as Addison County, Vermont is:
+When we plot standardized values that are approximately normal, we now know a lot about the proportion of observations falling along different points of the distribution. To see how, make a density plot showing the distribution of the standardized teen birthrates.
 
-```{r dnorm to find probability of z score}
+### REPLACE THIS LINE WITH YOUR CODE
+
+
+To find the probability of getting any z-score, use `dnorm()`. Think about this value as the y axis intersection with the density curve for any specific value on the x axis. For example, the probability that a randomly pulled county would have the same birthrate as Addison County, Vermont is:
+
+```{r dnorm to find density probability of z score}
 dnorm(-1.75531)
 ```
-
 
 Probabilities of specific values are more helpful for descriptives than for inference. Moving forward, what is more helpful is knowing the probability of randomly pulling a value that is greater than or less than an observed value.  In other words, we want to add up the probabilities of pulling any value less than Addison County's value.
 
@@ -126,7 +144,7 @@ If you have the z-value and want the percentile associated with it, use `pnorm()
 pnorm(-1.75531)
 ```
 
-So about 4% of counties have a teen birth rate less than the teen birth rate of Addison County.
+The pnorm() function will give you the proportion of the distribution to the left of the z score. So about 4% of counties have a teen birth rate less than the teen birth rate of Addison County. Alternative, Addison County is at the 4th percentile in the national distribution of teen birth rates.
 
 We can also plot the entire *empirical cumulative density function*:
 
@@ -135,18 +153,19 @@ birthrate_z_plot + geom_step(stat = "ecdf") +
      labs(y = "cumulative density")
 ```
 
+Since normal distributions are symmetrical, the probability of getting a value that is more extreme of a negative z-score is the same as the probability of getting a value that is more extreme of that positive z-score.
 
-Since normal distributions are symmetrical, the probability of getting a value that is more extreme of a negative z-score is the same as the probability of getting a value that is more extreme of that that positive z-score.
+What is the z-score of Hamilton County, Florida?
 
-What is the probability of another county having a birth rate that is higher than that of Hamilton County, FL?
+### REPLACE THIS LINE WITH YOUR CODE
 
-###REPLACE THIS LINE WITH YOUR CODE###
+What is the probability of another county having a birth rate that is higher than that of Hamilton County?
 
+### REPLACE THIS LINE WITH YOUR CODE
 
 What proportion of counties have birth rates between those of Addison and Hamilton?
 
-###REPLACE THIS LINE WITH YOUR CODE###
-
+### REPLACE THIS LINE WITH YOUR CODE
 
 
 # Exercise

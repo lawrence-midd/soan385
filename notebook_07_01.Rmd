@@ -3,7 +3,7 @@
 Load the `gss_week7.csv` file on Canvas as a data frame called `gss_week7` and load the usual packages:
 
 ```{r load data and packages, include = FALSE, warning = FALSE}
-gss_week7 <- read.csv("~/gss_week7.csv")
+gss_week7 <- read.csv("gss_week7.csv")
 library(tidyverse)
 library(pander)
 ```
@@ -16,7 +16,6 @@ When the population standard deviation is unknown (almost always), the uncertain
 When the sample size is large, z and t are the same. When in doubt, use t. It will always work since it adjusts for the sample size.
 
 You can find t-values and associated probabilities using functions similar to the `norm()` functions. The difference is that with the `t()` functions you also give the degrees of freedom.
-
 
 This is what we did before to get the z-value associated with the 95% confidence interval:
 ```{r qnorm for normal distribution}
@@ -50,10 +49,11 @@ Let's test if the mean value of `ideal_childs` in 2014 differed from 2.41 (the 1
 
 What was the mean for `ideal_childs` in 2014?
 
-### REPLACE THIS LINE WITH YOUR CODE ###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 The test statistic is calculated as: 
-\Large{$t = \frac{y - y_{H0}}{SD/ \sqrt{n}}$}
+$\Large{t = \frac{y - y_{H0}}{SD/ \sqrt{n}}}$
 
 For our test, the test statistic is:
 
@@ -66,6 +66,7 @@ What is the t-value for the critical region for our sample size and an alpha lev
 ### REPLACE THIS LINE WITH YOUR CODE ###
 
 
+
 ## Shortcut!
 
 R has a built-in function called `t.test()` that will calculate all of these test statistics. With one mean, we have to fill in the value of mu which is the null hypothesis value. If you leave it out, the default is zero.
@@ -76,4 +77,9 @@ t.test(gss_week7$ideal_childs[gss_week7$year==2014], mu = 2.41)
 
 For another example, let's look at 2010's mean number of children (variable = `childs`). Using `t.test()`, can we reject the null hypothesis that the 2010 mean is the same as 2.04 at the .05 alpha level?
 
-### REPLACE THIS LINE WITH YOUR CODE ###
+### REPLACE THIS LINE WITH YOUR CODE
+
+
+Can we reject the null hypothesis that the 2010 mean is the same as 1.8 at the .01 alpha level? We can change the default level of .05 to .01 using the conf.level option (which requires the confidence level, so .99 for the .01 alpha level).
+
+### REPLACE THIS LINE WITH YOUR CODE

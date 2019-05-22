@@ -1,11 +1,16 @@
 ## Getting Started
 
-To begin, copy all the text on this screen. Then open RStudio, and in the "File" menu select "New File" then "R Markdown". In the box on the left, click "Presentation". Add a title (in the title box) and your name (in the author box), select "PDF (Beamer)" as the Default Output Format, and click Ok. 
+To begin, copy all the text on this screen. Then open RStudio, and in the "File" menu select "New File" then "R Markdown". In the box on the left, click "Presentation". Add a title (in the title box) and your name (in the author box), select "HTML (ioslides)" as the Default Output Format, and click Ok. 
 
 A default markdown file will open. Delete all the text in the default file below the header (everything after line 7) and paste in the text you copied to your clipboard. Make sure that "R Markdown" is selected in the file type drop down menu in the bottom right corner of this pane. Save this file in your working directory.
 
-When you Knit the file, select "Knit to PDF (Beamer)" and you'll have slides instead of the usual document. Use a PDF viewer to open these slides...you are making a PDF document, not a Powerpoint!
+## Press Knit To Make Slides!
 
+To see your slides, it's best to open the file in a browser (preferably Google Chrome).
+
+When the file is open in a browser, you can press `f` to expand to a full screen.
+
+You can also press `w` to expand to a wide screen.
 
 ## Two Hashtags And A Space Identify New Slides
 
@@ -19,25 +24,14 @@ Everything below the hashtag line becomes the slide content
 
      - And tabbed dashes become sub-bullets
 
-- All other markdown commands also work in Beamer:
+- All other markdown commands also work in presentations:
 
      - Wrap text in *single asterisks* to italicize
      - Wrap text in **double asterisks** to bold
      - Wrap text in ***triple asterisks*** to italicize and bold
      - Wrap text in `brackets` to highlight it
-     
-
-## Presentation Tools
 
 >- A dash preceded by an arrow will be a bulleted line that requires "forwarding" to display
-
->- To add a pause in front of other text (or figure or plot), use three periods (each separated by a space) on a single line:
-
-. . . 
-
-### Three hashtags will create a subheading
-
-All the same rules apply for the content following a subheading
 
 ## Including R Code and Output in a Slide
 
@@ -50,6 +44,8 @@ summary(cars)
 ## Including R Code and Output in a Slide
 
 If you want the output but not the code to appear on a slide, add the `, echo = FALSE` option to the line where you open the chunk. And remember that the `pander` package makes output look much better!
+
+## Using Pander In Slides
 
 Summary of `speed` variable:
 
@@ -64,13 +60,31 @@ Summary of `distance` variable:
 pander(summary(cars$dist))
 ```
 
-## Suppressing Code Is Particularly Helpful With Figures:
+## Suppressing Code Is Helpful For Figures
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{r, echo = FALSE}
 plot(cars)
 ```
 
-## Including R Code and Output in a Slide
+## Adjusting Figure Size
+
+The default size for plots is somewhat small. The adjustments in the first line of the chunk below will usually create a figure that looks better on the slide.
+
+```{r, eval=FALSE, out.width="900px", out.height="500px"}
+
+plot(cars)
+```
+
+See how on the next slide...
+
+## Adjusting Figure Size
+
+```{r, echo = FALSE, out.width="900px", out.height="500px"}
+plot(cars)
+```
+
+
+## Including R Code and Output {.build}
 
 If you want to include code but not have it run, add the `, eval = FALSE` option to the line where you open the chunk:
 
@@ -81,18 +95,27 @@ plot <- ggplot(cars, aes(x = speed, y = dist))
 plot + geom_point()
 ```
 
-## Beamer Themes
+On the next slide, we will show the plot but not the code...
 
-Beamer slides can use many different layouts (called themes) and color options (called color themes). A visual guidebook to all the possible theme and color theme options is available at:
+## Figure Made With ggplot
 
-https://hartwork.org/beamer-theme-matrix/
+```{r, echo = FALSE, out.width="900px", out.height="500px", error = FALSE, warning = FALSE, message = FALSE}
 
-(Note that the above link is clickable on the slide output!)
+library(tidyverse)
+plot <- ggplot(cars, aes(x = speed, y = dist))
+plot + geom_point()
+```
 
-I use the "Madrid" theme with a custom color theme. But the default color theme is pretty close.
 
-## Beamer Themes
+## Printing Slides
 
->- To change the theme of your slides, add "theme: Madrid" to the header of this document in line 6 (above the three dashed lines). You can replace `Madrid` with any of the *row options* at the hartwork site. Note that theme names are capitalized.
+Printing works best when you open the html file in Google Chrome. 
 
->- To change the color theme of your slides, add "colortheme: seahorse" to the header of this document. You can replace `seahorse` with any of the *column options* at the hartwork site. Note that color theme names are ***not*** capitalized.
+In Chrome, choose Print from the File menu. Select the "Save as PDF" destination and make sure the "Background Graphics" button is selected in the "More Settings" menu.
+
+
+## Colors
+
+To learn how to change the colors of text and to add borders, open a new ioslides presentation in R Markdown and paste the text from the link to the ioslides_colors.Rmd notebook. 
+
+Note that you will also need to download the styles.css file from Canvas.

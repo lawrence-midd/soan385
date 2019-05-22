@@ -27,14 +27,14 @@ Lots of lines could pass through a scatterplot. The line we want to find is the 
 Our first example will regress `life_expectancy` on the standardized values of schooling (the `std_schooling_expectancy` variable). To find alpha and beta, we need a few basic statistics: the mean and standard deviation of both variables and the correlation between them.
 
 ```{r}
-#Correlation
+# Correlation
 cor(hdi$std_schooling_expectancy, hdi$life_expectancy)
 
-#Mean and Standard Deviation of X
+# Mean and Standard Deviation of X
 mean(hdi$std_schooling_expectancy)
 sd(hdi$std_schooling_expectancy)
 
-#Mean and Standard Deviation of Y
+# Mean and Standard Deviation of Y
 mean(hdi$life_expectancy)
 sd(hdi$life_expectancy)
 ```
@@ -43,7 +43,7 @@ To find beta, we need the correlation and the two standard deviations:
 $\Large{\beta = cor_{xy} \frac {s_{y}}{s_{x}}}$
 
 ```{r}
-#Finding Beta
+# Finding Beta
 beta <- cor(hdi$std_schooling_expectancy,
              hdi$life_expectancy) *
      (sd(hdi$life_expectancy) / sd(hdi$std_schooling_expectancy))
@@ -56,7 +56,7 @@ To find alpha, we need beta and the two means:
 $\Large{\alpha = \bar{y} - \beta \bar{x}}$
 
 ```{r}
-#Finding alpha
+# Finding alpha
 alpha <- mean(hdi$life_expectancy) - 
             beta*(mean(hdi$std_schooling_expectancy))
 
@@ -92,22 +92,22 @@ schooling_life_plot1 + geom_point(color = "Dark Gray") +
      geom_point(x = 0, y = 71.8371, color = "Red", size = 3)
 ```
 
-
 ## Predicting Values of Y
 
 Knowing alpha and beta will allow us to predict the value of Y for any value of X. And all of these predicted values will fall on our line.
 
 If x is 1 standard deviation above the mean, what is the predicted value of y?
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR COD
 
 If x is 1 standard deviation below the mean, what is the predicted value of y?
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
 Now add these two points to the plot:
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
+
 
 ## Regression in R
 
@@ -166,7 +166,7 @@ summary(schooling_life_model1)
 ```
 
 
-The `t value` column is the test statistic for a t-test that the coefficient is different from zero:
+The `t value` column is the test statistic for a t-test that the coefficient is different from zero. Divide the coefficient estimate by its standard error to find the test statistic:
 
 ```{r}
 6.5826 / 0.3856
@@ -198,10 +198,10 @@ schooling_life_plot1 + geom_point(color = "Dark Gray") +
 
 ## Exercises
 
-Regress the gender inequality index (`gender_inequality_index`) on the percentage of members of parliament who are female (`female_parliament_pct`)
+1. Regress the gender inequality index (`gender_inequality_index`) on the percentage of members of parliament who are female (`female_parliament_pct`)
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
 
-Regress the maternal mortality ratio (`maternal_mortality_ratio`) on the percentage of females with some secondary education (`female_secondary_educ`)
+2. Regress the maternal mortality ratio (`maternal_mortality_ratio`) on the percentage of females with some secondary education (`female_secondary_educ`). The `maternal mortality ratio` is the number of female deaths for every 100,000 live births in a given year.
 
-###REPLACE THIS LINE WITH YOUR CODE###
+### REPLACE THIS LINE WITH YOUR CODE
